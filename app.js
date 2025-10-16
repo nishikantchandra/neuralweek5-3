@@ -59,7 +59,7 @@ class StockPredictionApp {
       await this.model.train(X_train, y_train, X_test, y_test,
                              50,   // epochs
                              32,   // batch
-                             (epoch, logs, prog) => this.updateProgress(epoch+1, 50, logs, prog));
+                             (epoch, total, logs, prog) => this.updateProgress(epoch, total, logs, prog));
 
       document.getElementById('predictBtn').disabled = false;
       this.setStatus('Training complete – press Run Prediction');
