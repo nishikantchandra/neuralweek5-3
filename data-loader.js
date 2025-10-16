@@ -114,25 +114,18 @@ class DataLoader {
 
       /* ---------- build input tensor ---------- */
       const seq = [];
-      for (let j = inputLen - 1; j >= 0; j--) {
-        const day = this.dates[i - j];
-        const stepVec = [];
-        let ok = true;
-        this.symbols.forEach(sym => {
-          const row = (this.pivot[day] || {})[sym];
-          if (!row) { ok = false; return; }
-          const nOpen  = this.norm(row.Open,
-                                   this.minMax[sym].Open.min,
-                                   this.minMax[sym].Open.max);
-          const nClose = this.norm(row.Close,
-                                   this.minMax[sym].Close.min,
-                                   this.minMax[sym].Close.max);
-          stepVec.push(nOpen, nClose);
-        });
-        if (!ok) break;
-        seq.push(stepVec);
-      }
-      if (seq.length !== inputLen) continue;   // incomplete window
+     for (let i = inputLen; i <= this.dates.length - outputLen - 1; i++) {
+  const currentDate = this.dates[i];
+
+  /* ---------- build input tensor ---------- */
+  const seq = [];
+  let ok = true;                   // ✅ moved outside
+  for (let j = inputLen - 1; j >= 0; j--) {
+    const day = this.dates[i - j];
+    const stepVec = [];
+    ...
+  }
+  if (!ok || seq.length !== inputLen) continue;  // ✅ now safe   // incomplete window
 
       /* ---------- build 3-day binary labels ---------- */
       const baseClose = {};               // Close on currentDate
